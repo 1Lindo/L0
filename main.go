@@ -74,11 +74,11 @@ var (
 	ctx   = context.Background()
 )
 
-func newRouter(repoDB repo.IDBRepo) (router *mux.Router) {
+func newRouter(cache repo.ICacheRepo, db repo.IDBRepo) (router *mux.Router) {
 	router = mux.NewRouter()
 	router.HandleFunc("/orders/{id}", func(w http.ResponseWriter, r *http.Request) {
 		id := mux.Vars(r)["id"]
-		order, err := repoDB.GetOrderByID(ctx, id)
+		order, err := cache.GetOrderByID(ctx, id)
 		if err != nil {
 			log.Println(err)
 			w.Write([]byte("error in service"))
@@ -136,7 +136,7 @@ func main() {
 	go func(ctx context.Context) {
 		for {
 			select {
-			case <-time.After(time.Second * 1):
+			case <-time.After(time.Second * 100):
 				var order models.EventOrder
 				json.Unmarshal([]byte(DATA), &order)
 				err := ev.Publish("updates", &order)
@@ -151,7 +151,7 @@ func main() {
 		}
 	}(ctx)
 
-	router := newRouter(db)
+	router := newRouter(cache, db)
 	if err := http.ListenAndServe(":8080", router); err != nil {
 		log.Fatal(err)
 	}
