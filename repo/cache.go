@@ -36,6 +36,7 @@ func (c *cacheRepo) GetOrders(ctx context.Context) ([]models.EventOrder, error) 
 	}
 	return orders, nil
 }
+
 func (c *cacheRepo) InsertOrder(ctx context.Context, order *models.EventOrder) error {
 	orderMf, err := json.Marshal(order)
 	if err != nil {

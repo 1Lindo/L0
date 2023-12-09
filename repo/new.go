@@ -12,7 +12,3 @@ func NewDBRepo(db *sqlx.DB) IDBRepo {
 func NewCacheRepo(cache *redis.Client, repoDB IDBRepo) ICacheRepo {
 	return &cacheRepo{cache: cache, repoDB: repoDB}
 }
-
-func NewCache(cache *redis.Client, repoDB IDBRepo) ICacheRepo {
-	return &cacheRepo{repoDB: repoDB, cache: cache}
-}

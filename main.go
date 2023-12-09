@@ -74,7 +74,7 @@ var (
 	ctx   = context.Background()
 )
 
-func newRouter(cache repo.ICacheRepo, db repo.IDBRepo) (router *mux.Router) {
+func newRouter(cache repo.ICacheRepo) (router *mux.Router) {
 	router = mux.NewRouter()
 	router.HandleFunc("/orders/{id}", func(w http.ResponseWriter, r *http.Request) {
 		id := mux.Vars(r)["id"]
@@ -151,7 +151,7 @@ func main() {
 		}
 	}(ctx)
 
-	router := newRouter(cache, db)
+	router := newRouter(cache)
 	if err := http.ListenAndServe(":8080", router); err != nil {
 		log.Fatal(err)
 	}
